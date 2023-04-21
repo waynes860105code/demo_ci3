@@ -1,0 +1,23 @@
+<IfModule authz_core_module>
+ #啟動rewrite引擎
+    RewriteEngine On
+    #這裡指的是CI的位置，也就是CI位於根目錄下的哪個路徑中
+    RewriteBase /ci/
+
+    #改寫規則一: 所有要往/ci/system下的request都導到index.php下
+    RewriteCond %{REQUEST_URI} ^system.*
+    RewriteRule ^(.*)$ ./index.php?/$1 [L,QSA]
+
+    #改寫規則二: 所有要往/ci/application下的request都導到index.php下
+    RewriteCond %{REQUEST_URI} ^application.*
+    RewriteRule ^(.*)$ ./index.php?/$1 [L,QSA]
+
+    #改寫規則三: 若網址後的參數不為index.php, images, css, js, robots.txt, favicon.ico任何一項
+    RewriteCond $1 !^(index\.php|images|css|js|robots\.txt|favicon\.ico)
+    #且request的不是一般檔案
+    RewriteCond %{REQUEST_FILENAME} !-f
+    #且request也不是資料夾
+    RewriteCond %{REQUEST_FILENAME} !-d
+    #將request參數導到index.php下
+    RewriteRule ^(.*)$ ./index.php?/$1 [L,QSA]
+</IfModule>
